@@ -13,6 +13,7 @@ class EEPROM_24AA64 {
     
         bool read(char* data, uint16_t length, uint16_t start_address = 0); // success = 0
         bool write(char* data, uint16_t length, uint16_t start_address);   // success = 0
+        bool clear();
     
     private:
         bool write_block(char* data, uint8_t length, uint16_t write_address);
@@ -22,6 +23,8 @@ class EEPROM_24AA64 {
     private:
         I2C i2c;
         uint16_t address;
-        const uint16_t MAX_ADDRESS = 0x1FFF;
-        const uint8_t PAGE_SIZE = 32;
+
+    public:
+        static const uint16_t MAX_ADDRESS = 0x1FFF;
+        static const uint8_t PAGE_SIZE = 32;
 };

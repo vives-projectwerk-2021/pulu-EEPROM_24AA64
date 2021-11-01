@@ -1,4 +1,5 @@
 #include "EEPROM_24AA64.h"
+#include <array>
 
 EEPROM_24AA64::EEPROM_24AA64(PinName sda, PinName scl, uint16_t address):
     i2c(sda, scl) {
@@ -75,6 +76,23 @@ bool EEPROM_24AA64::write(char* data, uint16_t length, uint16_t start_address) {
         EEPROM_24AA64_DEBUG("write: SUCCESS (last block)");
     }
     EEPROM_24AA64_DEBUG("write: DONE");
+    return false;
+}
+
+bool EEPROM_24AA64::clear() {
+    std::array<char, PAGE_SIZE> data;
+    data.fill(0xFF);
+    bool ack;
+    uint16_t max_pages = MAX_ADDRESS/PAGE_SIZE;
+    for(uint16_t page = 0; page<max_pages; page++) {
+        ack = write_block(data.data(), data.size(), page*PAGE_SIZE);
+        if(ack) {
+            EEPROM_24AA64_DEBUG("clear: FAILURE (page %d/%d)", page+1, max_pages);
+            return true;
+        }
+        EEPROM_24AA64_DEBUG("clear: SUCCESS (page %d/%d)", page+1, max_pages);
+    }
+    EEPROM_24AA64_DEBUG("clear: DONE");
     return false;
 }
 
