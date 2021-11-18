@@ -6,6 +6,9 @@ EEPROM_24AA64::EEPROM_24AA64(I2C* i2c, uint8_t address) {
     this->address = address;
 }
 
+/** Read data from the eeprom
+ * @return 0 on success
+ */
 bool EEPROM_24AA64::read(char* data, uint16_t length, uint16_t start_address) {
     if(!is_valid_address_range(start_address, length)) {
         EEPROM_24AA64_DEBUG("read: FAILURE");
@@ -29,6 +32,9 @@ bool EEPROM_24AA64::read(char* data, uint16_t length, uint16_t start_address) {
     return false;
 }
 
+/** Write data to the eeprom
+ * @return 0 on success
+ */
 bool EEPROM_24AA64::write(char* data, uint16_t length, uint16_t start_address) {
     if(!is_valid_address_range(start_address, length)) {
         EEPROM_24AA64_DEBUG("write: FAILURE");
@@ -79,6 +85,9 @@ bool EEPROM_24AA64::write(char* data, uint16_t length, uint16_t start_address) {
     return false;
 }
 
+/** Clear all data on the eeprom
+ * @return 0 on success
+ */
 bool EEPROM_24AA64::clear() {
     std::array<char, PAGE_SIZE> data;
     data.fill(0xFF);

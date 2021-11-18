@@ -11,8 +11,8 @@ class EEPROM_24AA64 {
     public:
         EEPROM_24AA64(I2C* i2c, uint8_t address);
     
-        bool read(char* data, uint16_t length, uint16_t start_address = 0); // success = 0
-        bool write(char* data, uint16_t length, uint16_t start_address);   // success = 0
+        bool read(char* data, uint16_t length, uint16_t start_address = 0);
+        bool write(char* data, uint16_t length, uint16_t start_address);
         bool clear();
     
     private:
