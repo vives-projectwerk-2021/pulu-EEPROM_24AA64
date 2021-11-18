@@ -9,7 +9,7 @@
 
 class EEPROM_24AA64 {
     public:
-        EEPROM_24AA64(PinName sda, PinName scl, uint16_t address);
+        EEPROM_24AA64(I2C* i2c, uint8_t address);
     
         bool read(char* data, uint16_t length, uint16_t start_address = 0); // success = 0
         bool write(char* data, uint16_t length, uint16_t start_address);   // success = 0
@@ -21,8 +21,8 @@ class EEPROM_24AA64 {
         bool is_valid_address_range(uint16_t address, uint16_t length);
     
     private:
-        I2C i2c;
-        uint16_t address;
+        I2C* i2c;
+        uint8_t address;
 
     public:
         static const uint16_t MAX_ADDRESS = 0x1FFF;

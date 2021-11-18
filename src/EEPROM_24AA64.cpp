@@ -1,8 +1,8 @@
 #include "EEPROM_24AA64.h"
 #include <array>
 
-EEPROM_24AA64::EEPROM_24AA64(PinName sda, PinName scl, uint16_t address):
-    i2c(sda, scl) {
+EEPROM_24AA64::EEPROM_24AA64(I2C* i2c, uint8_t address) {
+    this->i2c = i2c;
     this->address = address;
 }
 
@@ -14,12 +14,12 @@ bool EEPROM_24AA64::read(char* data, uint16_t length, uint16_t start_address) {
     char read_address[2] = {(char)(start_address>>8), (char)start_address};
     bool ack;
     EEPROM_24AA64_DEBUG("reading from address: %d (0x%X 0x%X)-- length: %d", start_address, read_address[0], read_address[1], length);
-    ack = i2c.write(address, read_address, 2, true);
+    ack = i2c->write(address, read_address, 2, true);
     if(ack) {
         EEPROM_24AA64_DEBUG("read: FAILURE while writing address");
         return true;
     }
-    ack = i2c.read(address, data, length);
+    ack = i2c->read(address, data, length);
     if(ack) {
         EEPROM_24AA64_DEBUG("read: FAILURE while reading");
         return true;
@@ -104,7 +104,7 @@ bool EEPROM_24AA64::write_block(char* data, uint8_t length, uint16_t write_addre
     for(uint8_t i = 0; i<length; i++) {
         buffer[i+2] = data[i];
     }
-    ack = i2c.write(address, buffer, length+2);
+    ack = i2c->write(address, buffer, length+2);
     if(ack) {
         free(buffer);
         return true;
@@ -119,7 +119,7 @@ void EEPROM_24AA64::wait_till_ready() {
     char cmd[2] = {0,0};
     EEPROM_24AA64_DEBUG("waiting till ready");
     do {
-        ack = i2c.write(address, cmd, 2);
+        ack = i2c->write(address, cmd, 2);
         wait_us(500);
     } while(ack != 0);
     EEPROM_24AA64_DEBUG("ready");
